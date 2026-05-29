@@ -1,26 +1,360 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
+/* ============================================================
+   CSS Custom Properties — Design System
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core background palette */
+  --bg-void: #040408;
+  --bg-deep: #080b12;
+  --bg-base: #0d1117;
+  --bg-elevated: #111827;
+  --bg-panel: rgba(17, 24, 39, 0.85);
+
+  /* Glass effect */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  /* Brand / Accent colors */
+  --accent-blue: #3b82f6;
+  --accent-violet: #8b5cf6;
+  --accent-cyan: #06b6d4;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+
+  /* Glows */
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.4);
+  --glow-violet: 0 0 20px rgba(139, 92, 246, 0.4);
+  --glow-cyan: 0 0 20px rgba(6, 182, 212, 0.4);
+
+  /* Text colors */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-muted: rgba(255, 255, 255, 0.35);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ============================================================
+   Global Reset & Base Styles
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'cv02';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   Glassmorphism Card
+   ============================================================ */
+.glass-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--glass-shadow);
+  border-radius: 16px;
+}
+
+.glass-card-darker {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+}
+
+/* ============================================================
+   Glow Text Utility
+   ============================================================ */
+.glow-text-blue {
+  color: var(--accent-blue);
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
+}
+
+.glow-text-violet {
+  color: var(--accent-violet);
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.7);
+}
+
+.glow-text-cyan {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 20px rgba(6, 182, 212, 0.7);
+}
+
+/* ============================================================
+   Gradient Text
+   ============================================================ */
+.gradient-text {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-violet) 50%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ============================================================
+   Animated Gradient Border
+   ============================================================ */
+.gradient-border {
+  position: relative;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-violet), var(--accent-cyan));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* ============================================================
+   Custom Scrollbar
+   ============================================================ */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.4);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.7);
+}
+
+/* ============================================================
+   KaTeX Formula Override
+   ============================================================ */
+.katex {
+  color: var(--text-primary) !important;
+  font-size: 1em;
+}
+
+.katex-display {
+  margin: 0 !important;
+}
+
+.formula-highlight .katex {
+  color: var(--accent-cyan) !important;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+/* ============================================================
+   Range Input (Slider) Styling
+   ============================================================ */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-violet);
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.7);
+  margin-top: -6px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.9);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-violet);
+  border: none;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.7);
+}
+
+/* ============================================================
+   Input Styling
+   ============================================================ */
+.input-field {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  /* use padding shorthand — inline style can override paddingLeft */
+  padding: 9px 12px;
+  width: 100%;
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: var(--accent-violet);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15), inset 0 0 0 1px rgba(139, 92, 246, 0.3);
+}
+
+.input-field.valid {
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.input-field.invalid {
+  border-color: rgba(244, 63, 94, 0.5);
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* ============================================================
+   Animated Background Particles
+   ============================================================ */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ============================================================
+   Pulse Animation
+   ============================================================ */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(139, 92, 246, 0.4); }
+  50% { box-shadow: 0 0 25px rgba(139, 92, 246, 0.8), 0 0 50px rgba(139, 92, 246, 0.3); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ============================================================
+   Floating Animation
+   ============================================================ */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ============================================================
+   Gradient Background for Header
+   ============================================================ */
+.header-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(139, 92, 246, 0.12) 0%,
+    transparent 70%
+  );
+}
+
+/* ============================================================
+   Method Tab Active Indicator
+   ============================================================ */
+.tab-active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+  border-color: rgba(139, 92, 246, 0.5) !important;
+  color: white;
+}
+
+.tab-active::before {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-violet));
+  border-radius: 1px;
+}
+
+/* ============================================================
+   Timeline Step Indicator
+   ============================================================ */
+.step-active {
+  background: var(--accent-violet);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.7);
+}
+
+.step-done {
+  background: var(--accent-emerald);
+}
+
+.step-pending {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   Volume Badge
+   ============================================================ */
+.volume-badge {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.15));
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+}
+
+/* ============================================================
+   Responsive utilities
+   ============================================================ */
+@media (max-width: 768px) {
+  .panel-right {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 50vh;
+    overflow-y: auto;
+    z-index: 10;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }
